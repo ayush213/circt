@@ -677,8 +677,12 @@ struct ExprVisitor {
         operands.push_back(value);
       }
 
-      auto arrayType = moore::UnpackedArrayType::get(
-          context.getContext(), operands.size(), elementType);
+      moore::UnpackedType arrayType;
+      if (operands.empty())
+        arrayType = moore::OpenUnpackedArrayType::get(elementType);
+      else
+        arrayType = moore::UnpackedArrayType::get(context.getContext(),
+                                                  operands.size(), elementType);
       return moore::ArrayCreateOp::create(builder, loc, arrayType, operands);
     }
 
